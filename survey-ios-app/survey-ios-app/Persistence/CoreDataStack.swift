@@ -13,13 +13,27 @@ enum RecordType {
     static let question = "QuestionMO"
 }
 
-protocol PersistentStore {
+protocol PersistentFeachable {
     func fetch(
         entityName: String,
         predicate: NSPredicate?,
         sortDescriptors: [NSSortDescriptor]?,
         context: NSManagedObjectContext?
     ) -> [NSFetchRequestResult]?
+
+    func getRecordsCount(
+        name: String, predicate: NSPredicate?,
+        context: NSManagedObjectContext?
+    ) -> Int
+}
+
+protocol PersistentSavable {
+    func saveViewContext()
+    func save(context: NSManagedObjectContext, reset: Bool, wait: Bool)
+}
+
+protocol PersistentStore: PersistentFeachable, PersistentSavable {
+    var bgMOC: NSManagedObjectContext { get }
 }
 
 class CoreDataStack: PersistentStore {
@@ -59,7 +73,7 @@ class CoreDataStack: PersistentStore {
         return context
     }()
 
-    func newBackgroundContext() -> NSManagedObjectContext {
+    private func newBackgroundContext() -> NSManagedObjectContext {
         let bgContext = persistentContainer.newBackgroundContext()
         bgContext.name = "bgContext \(UUID().uuidString)"
         bgContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -71,11 +85,11 @@ class CoreDataStack: PersistentStore {
 extension CoreDataStack {
     func saveViewContext() {
         DispatchQueue.main.async {
-            self.save(context: self.mainMOC, reset: false)
+            self.save(context: self.mainMOC, reset: false, wait: false)
         }
     }
 
-    func save(context: NSManagedObjectContext, reset: Bool = false, wait: Bool = false) {
+    func save(context: NSManagedObjectContext, reset: Bool, wait: Bool) {
         let block = {
             guard context.hasChanges else { return }
             do {
@@ -87,12 +101,21 @@ extension CoreDataStack {
                 context.reset()
             }
         }
-        wait ? context.performAndWait(block) : context.perform(block)
+        if wait {
+            context.performAndWait(block)
+        } else {
+            context.perform(block)
+        }
     }
 }
 
 extension CoreDataStack {
-    func fetch(entityName: String, predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]?, context: NSManagedObjectContext?) -> [NSFetchRequestResult]? {
+    func fetch(
+        entityName: String,
+        predicate: NSPredicate?,
+        sortDescriptors: [NSSortDescriptor]?,
+        context: NSManagedObjectContext?
+    ) -> [NSFetchRequestResult]? {
         let managedContext = context ?? persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         if !sortDescriptors.isNilOrEmpty {
@@ -117,26 +140,7 @@ extension CoreDataStack {
         return result
     }
 
-    func removeAll(entityName: String, wait: Bool = false, context: NSManagedObjectContext? = nil) {
-        let context = context ?? mainMOC
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        deleteRequest.resultType = .resultTypeObjectIDs
-
-        let block = {
-            do {
-                let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
-                if let objectIDArray = result?.result as? [NSManagedObjectID] {
-                    let changes = [NSDeletedObjectsKey: objectIDArray] as [AnyHashable: Any]
-                    NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [context])
-                }
-            } catch { }
-        }
-
-        wait ? context.performAndWait(block) : context.perform(block)
-    }
-
-    func getRecordsCount(name: String, predicate: NSPredicate? = nil, context: NSManagedObjectContext? = nil) -> Int {
+    func getRecordsCount(name: String, predicate: NSPredicate?, context: NSManagedObjectContext?) -> Int {
         let context = context ?? mainMOC
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
 
@@ -145,19 +149,5 @@ extension CoreDataStack {
         }
 
         return (try? context.count(for: fetchRequest)) ?? 0
-    }
-
-    func deteleALL(completion: @escaping () -> Void) {
-        let storeContainer = persistentContainer.persistentStoreCoordinator
-        for store in storeContainer.persistentStores {
-            if let url = store.url {
-                try? storeContainer.destroyPersistentStore(
-                    at: url,
-                    ofType: store.type,
-                    options: nil
-                )
-            }
-        }
-        createPersistentContainer(completion: completion)
     }
 }

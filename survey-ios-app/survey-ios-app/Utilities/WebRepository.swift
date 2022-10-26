@@ -14,8 +14,11 @@ protocol WebRepository {
 }
 
 extension WebRepository {
-    func call<Value>(endpoint: APICall, httpCodes: HTTPCodes = .success, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<Value, Error>
-        where Value: Decodable {
+    func call<Value>(
+        endpoint: APICall,
+        httpCodes: HTTPCodes = .success,
+        decoder: JSONDecoder = JSONDecoder()
+    ) -> AnyPublisher<Value, Error> where Value: Decodable {
         do {
             let request = try endpoint.urlRequest(baseURL: baseURL)
             return session
@@ -31,15 +34,15 @@ extension WebRepository {
 
 extension Publisher where Output == URLSession.DataTaskPublisher.Output {
     func requestData(httpCodes: HTTPCodes = .success) -> AnyPublisher<Data, Error> {
-        return tryMap {
-                assert(!Thread.isMainThread)
-                guard let code = ($0.1 as? HTTPURLResponse)?.statusCode else {
-                    throw APIError.unexpectedResponse
-                }
-                guard httpCodes.contains(code) else {
-                    throw APIError.httpCode(code, String(decoding: $0.0, as: UTF8.self))
-                }
-                return $0.0
+        tryMap {
+            assert(!Thread.isMainThread)
+            guard let code = ($0.1 as? HTTPURLResponse)?.statusCode else {
+                throw APIError.unexpectedResponse
+            }
+            guard httpCodes.contains(code) else {
+                throw APIError.httpCode(code, String(decoding: $0.0, as: UTF8.self))
+            }
+            return $0.0
         }
         .extractUnderlyingError()
         .eraseToAnyPublisher()
@@ -47,8 +50,11 @@ extension Publisher where Output == URLSession.DataTaskPublisher.Output {
 }
 
 private extension Publisher where Output == URLSession.DataTaskPublisher.Output {
-    func requestJSON<Value>(httpCodes: HTTPCodes, decoder: JSONDecoder) -> AnyPublisher<Value, Error> where Value: Decodable {
-        return requestData(httpCodes: httpCodes)
+    func requestJSON<Value>(
+        httpCodes: HTTPCodes,
+        decoder: JSONDecoder
+    ) -> AnyPublisher<Value, Error> where Value: Decodable {
+        requestData(httpCodes: httpCodes)
             .decode(type: Value.self, decoder: decoder)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()

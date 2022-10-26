@@ -14,10 +14,14 @@ protocol SurveyDBRepository {
 }
 
 struct DefSurveyDBRepository: SurveyDBRepository {
-    let persistentStore: CoreDataStack
+    let persistentStore: PersistentStore
 
     func hasLoadedData() -> Bool {
-        persistentStore.getRecordsCount(name: RecordType.question) > 0
+        persistentStore.getRecordsCount(
+            name: RecordType.question,
+            predicate: nil,
+            context: nil
+        ) > 0
     }
 
     func store(questions: [Question]) {
@@ -27,7 +31,7 @@ struct DefSurveyDBRepository: SurveyDBRepository {
             newRecord.id = Int32(question.id)
             newRecord.question = question.question
         }
-        persistentStore.save(context: bgContext, wait: true)
+        persistentStore.save(context: bgContext, reset: false, wait: true)
         persistentStore.saveViewContext()
     }
 
