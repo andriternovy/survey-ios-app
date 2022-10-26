@@ -27,7 +27,6 @@ enum LogType {
 
 enum AppLogger {
     static func log(message: String, category: LoggerCategory, type: LogType) {
-        let loggerMesssage = "Category: \(category.rawValue) | Message: \(message)"
         switch type {
         case .notice:
             logger(category).notice("\(message)")

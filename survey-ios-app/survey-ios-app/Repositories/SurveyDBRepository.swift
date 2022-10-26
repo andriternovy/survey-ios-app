@@ -35,7 +35,7 @@ struct DefSurveyDBRepository: SurveyDBRepository {
         persistentStore.fetch(
             entityName: RecordType.question,
             predicate: nil,
-            sortDescriptors: [NSSortDescriptor(key: "id", ascending: false)],
+            sortDescriptors: [NSSortDescriptor(key: "id", ascending: true)],
             context: nil
         ) as? [QuestionMO] ?? []
     }

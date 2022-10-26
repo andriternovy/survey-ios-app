@@ -50,6 +50,7 @@ private extension HomeView {
     }
 }
 
+// swiftlint:disable nesting
 private extension HomeView {
     enum Constants {
         enum Titles {
@@ -61,3 +62,4 @@ private extension HomeView {
         }
     }
 }
+// swiftlint:enable nesting

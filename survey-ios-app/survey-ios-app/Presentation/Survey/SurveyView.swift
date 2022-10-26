@@ -21,20 +21,26 @@ struct SurveyView: View {
             if let question = viewModel.selectedQuestion {
                 VStack {
                     Text(question.question ?? "")
-                
+
                     if question.submited {
                         Text(question.answer ?? "")
                             .padding()
-                        
+
                         Spacer()
                     } else {
                         TextEditor(text: $viewModel.answer)
-                        Button(
-                            action: { viewModel.submitAnswer() },
-                            label: { Text("Submit") }
-                        )
+
+                        Button(action: {
+                            viewModel.submitAnswer()
+                        }, label: {
+                            Text("Submit")
+                                .foregroundColor(.blue)
+                                .frame(width: 100)
+                                .padding()
+                                .foregroundColor(Color.black)
+                        })
                         .background(.white)
-                        .border(.white)
+                        .cornerRadius(5)
                     }
                 }
                 .padding()
@@ -54,6 +60,10 @@ struct SurveyView: View {
                 viewModel.next()
             }
             .disabled(viewModel.nextDisabled)
+        }
+        .banner(type: .success, show: $viewModel.displaySuccess)
+        .banner(type: .error, show: $viewModel.displayFailure) {
+            viewModel.submitAnswer()
         }
 
     }

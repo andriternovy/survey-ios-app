@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9CA62466290997FD00A3D90C /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA62465290997FD00A3D90C /* SuccessView.swift */; };
-		9CA624682909980800A3D90C /* FailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA624672909980800A3D90C /* FailureView.swift */; };
+		9CA6246C2909B41C00A3D90C /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA6246B2909B41C00A3D90C /* BannerView.swift */; };
 		9CB5F39428FEA61D0090B2B4 /* SurveyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB5F39328FEA61D0090B2B4 /* SurveyApp.swift */; };
 		9CB5F39828FEA61F0090B2B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CB5F39728FEA61F0090B2B4 /* Assets.xcassets */; };
 		9CB5F39B28FEA61F0090B2B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CB5F39A28FEA61F0090B2B4 /* Preview Assets.xcassets */; };
@@ -32,8 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		9CA62465290997FD00A3D90C /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
-		9CA624672909980800A3D90C /* FailureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailureView.swift; sourceTree = "<group>"; };
+		9CA6246B2909B41C00A3D90C /* BannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		9CB5F39028FEA61D0090B2B4 /* survey-ios-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "survey-ios-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CB5F39328FEA61D0090B2B4 /* SurveyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyApp.swift; sourceTree = "<group>"; };
 		9CB5F39728FEA61F0090B2B4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -90,8 +88,7 @@
 		9CA62464290997ED00A3D90C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				9CA62465290997FD00A3D90C /* SuccessView.swift */,
-				9CA624672909980800A3D90C /* FailureView.swift */,
+				9CA6246B2909B41C00A3D90C /* BannerView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -317,14 +314,13 @@
 				9CB5F39428FEA61D0090B2B4 /* SurveyApp.swift in Sources */,
 				9CB5F3E028FEAD5E0090B2B4 /* CoreDataStack.swift in Sources */,
 				9CB5F3DE28FEAD4D0090B2B4 /* SurveyModel.xcdatamodeld in Sources */,
+				9CA6246C2909B41C00A3D90C /* BannerView.swift in Sources */,
 				9CB5F3CD28FEA9440090B2B4 /* HomeViewModel.swift in Sources */,
-				9CA62466290997FD00A3D90C /* SuccessView.swift in Sources */,
 				9CB5F3D328FEAB7B0090B2B4 /* InteractorsContainer.swift in Sources */,
 				9CB5F3E328FEADE00090B2B4 /* AppLogger.swift in Sources */,
 				9CB5F3E828FEB04A0090B2B4 /* SurveyDBRepository.swift in Sources */,
 				9CB5F3EC28FEB1650090B2B4 /* WebRepository.swift in Sources */,
 				9CB5F3C528FEA8670090B2B4 /* AppEnvironment.swift in Sources */,
-				9CA624682909980800A3D90C /* FailureView.swift in Sources */,
 				9CB5F3F028FEB3000090B2B4 /* Optional+Extensions.swift in Sources */,
 				9CB5F3EE28FEB2CD0090B2B4 /* NetworkingHelpers.swift in Sources */,
 				9CB5F3EA28FEB14F0090B2B4 /* APICall.swift in Sources */,
