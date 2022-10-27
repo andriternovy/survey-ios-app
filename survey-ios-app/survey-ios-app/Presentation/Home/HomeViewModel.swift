@@ -13,6 +13,9 @@ final class HomeViewModel: ObservableObject {
     let surveyDBRepository: SurveyDBRepository
     private var cancellables = Set<AnyCancellable>()
 
+    @Published var displayFailure: Bool = false
+    @Published var openDetails: Bool = false
+
     init(
         surveyRepository: SurveyRepository,
         surveyDBRepository: SurveyDBRepository
@@ -24,6 +27,8 @@ final class HomeViewModel: ObservableObject {
     func startSurvey() {
         if !surveyDBRepository.hasLoadedData() {
             fetchQuestions()
+        } else {
+            openDetails.toggle()
         }
     }
 }
@@ -33,13 +38,15 @@ private extension HomeViewModel {
         AppLogger.log(message: "fetch questions", category: .api, type: .info)
         surveyRepository.fetchQuestions()
             .receive(on: RunLoop.main)
-            .sink(receiveCompletion: { result in
+            .sink(receiveCompletion: { [weak self] result in
                 if case .failure(let error) = result {
                     AppLogger.log(message: "fetch questions error: \(error)", category: .api, type: .info)
+                    self?.displayFailure = true
                 }
             }, receiveValue: { [weak self] questions in
                 AppLogger.log(message: "fetch questions \(questions)", category: .api, type: .info)
                 self?.surveyDBRepository.store(questions: questions)
+                self?.openDetails.toggle()
             })
             .store(in: &cancellables)
     }

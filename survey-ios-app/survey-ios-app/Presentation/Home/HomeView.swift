@@ -9,13 +9,16 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
-    @State var isActive: Bool = false
     var body: some View {
         ZStack {
             titleView
             submitButton
+            surveyNavigation()
         }
         .background(.gray)
+        .banner(type: .error, show: $viewModel.displayFailure) {
+            viewModel.startSurvey()
+        }
     }
 }
 
@@ -29,24 +32,25 @@ private extension HomeView {
     }
 
     var submitButton: some View {
+        Button(action: {
+            viewModel.startSurvey()
+        }, label: {
+            Text(Constants.Titles.startString)
+                .foregroundColor(.blue)
+                .frame(width: Constants.Sizes.submitButtonWidth)
+                .padding()
+                .foregroundColor(Color.black)
+        })
+        .background(.white)
+        .cornerRadius(5)
+    }
+
+    func surveyNavigation() -> some View {
         NavigationLink(
             destination: SurveyView(viewModel:
                                         SurveyViewModel(surveyRepository: viewModel.surveyRepository,
                                                                surveyDBRepository: viewModel.surveyDBRepository)),
-            isActive: $isActive) {
-                Button(action: {
-                    isActive.toggle()
-                    viewModel.startSurvey()
-                }, label: {
-                    Text(Constants.Titles.startString)
-                        .foregroundColor(.blue)
-                        .frame(width: Constants.Sizes.submitButtonWidth)
-                        .padding()
-                        .foregroundColor(Color.black)
-                })
-                .background(.white)
-                .cornerRadius(5)
-            }
+            isActive: $viewModel.openDetails) { }
     }
 }
 
