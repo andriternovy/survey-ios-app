@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
+    @EnvironmentObject var interactors: DIContainer.Interactors
     var body: some View {
         ZStack {
             titleView
@@ -47,9 +48,7 @@ private extension HomeView {
 
     func surveyNavigation() -> some View {
         NavigationLink(
-            destination: SurveyView(viewModel:
-                                        SurveyViewModel(surveyRepository: viewModel.surveyRepository,
-                                                               surveyDBRepository: viewModel.surveyDBRepository)),
+            destination: SurveyView(viewModel: interactors.surveyViewModel),
             isActive: $viewModel.openDetails) { }
     }
 }

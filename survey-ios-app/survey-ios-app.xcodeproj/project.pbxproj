@@ -78,19 +78,11 @@
 		9CA624632909932100A3D90C /* Survey */ = {
 			isa = PBXGroup;
 			children = (
-				9CA62464290997ED00A3D90C /* View */,
 				9CB5F3CE28FEA9540090B2B4 /* SurveyView.swift */,
 				9CB5F3D028FEA9610090B2B4 /* SurveyViewModel.swift */,
-			);
-			path = Survey;
-			sourceTree = "<group>";
-		};
-		9CA62464290997ED00A3D90C /* View */ = {
-			isa = PBXGroup;
-			children = (
 				9CA6246B2909B41C00A3D90C /* BannerView.swift */,
 			);
-			path = View;
+			path = Survey;
 			sourceTree = "<group>";
 		};
 		9CB5F38728FEA61D0090B2B4 = {

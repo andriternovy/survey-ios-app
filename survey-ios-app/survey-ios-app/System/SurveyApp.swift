@@ -19,6 +19,7 @@ struct SurveyApp: App {
         WindowGroup {
             NavigationView {
                 HomeView(viewModel: environment.container.interactors.homeViewModel)
+                    .environmentObject(environment.container.interactors)
             }
         }
     }
