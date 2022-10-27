@@ -10,7 +10,7 @@ import Combine
 
 protocol SurveyRepository: WebRepository {
     func fetchQuestions() -> AnyPublisher<[Question], Error>
-    func submitAnswer(id: Int, answer: String) -> AnyPublisher<Bool, Error>
+    func submitAnswer(id: Int, answer: String) -> AnyPublisher<NoReply, Error>
 }
 
 struct DefSurveyRepository: SurveyRepository {
@@ -26,8 +26,8 @@ struct DefSurveyRepository: SurveyRepository {
         call(endpoint: API.fetch)
     }
 
-    func submitAnswer(id: Int, answer: String) -> AnyPublisher<Bool, Error> {
-        Result.Publisher(true).eraseToAnyPublisher()
+    func submitAnswer(id: Int, answer: String) -> AnyPublisher<NoReply, Error> {
+        call(endpoint: API.submit(id, answer))
     }
 }
 

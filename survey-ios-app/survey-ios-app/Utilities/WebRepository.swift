@@ -13,6 +13,8 @@ protocol WebRepository {
     var baseURL: String { get }
 }
 
+struct NoReply: Decodable { }
+
 extension WebRepository {
     func call<Value>(
         endpoint: APICall,
@@ -42,7 +44,9 @@ extension Publisher where Output == URLSession.DataTaskPublisher.Output {
             guard httpCodes.contains(code) else {
                 throw APIError.httpCode(code, String(decoding: $0.0, as: UTF8.self))
             }
-            return $0.0
+            // swiftlint:disable all
+            return $0.0.isEmpty ? "{}".data(using: .utf8)! : $0.0
+            // swiftlint:enable all
         }
         .extractUnderlyingError()
         .eraseToAnyPublisher()

@@ -35,18 +35,17 @@ final class SurveyViewModel: ObservableObject {
 
     func fetchData() {
         questions = surveyDBRepository.fetchQuestions()
-        submittedQuestions = questions.filter { $0.submited == true }.count
-        selectQuestion()
+        updatedDataSource()
     }
 
     func prev() {
         selectedQuestionIndex -= 1
-        selectQuestion()
+        updatedDataSource()
     }
 
     func next() {
         selectedQuestionIndex += 1
-        selectQuestion()
+        updatedDataSource()
     }
 
     func submitAnswer() {
@@ -64,20 +63,34 @@ final class SurveyViewModel: ObservableObject {
                 question.submited = true
                 try? question.managedObjectContext?.save()
                 self?.displaySuccess = true
+                self?.refreshSubmittedCounter()
             })
             .store(in: &cancellables)
     }
 }
 
 private extension SurveyViewModel {
-    func selectQuestion() {
+    func updatedDataSource() {
+        updateAnswer()
+        refreshSelection()
+        refreshSubmittedCounter()
+    }
+
+    func updateAnswer() {
         if !answer.isEmpty {
             selectedQuestion?.answer = answer
             try? selectedQuestion?.managedObjectContext?.save()
         }
+    }
+
+    func refreshSelection() {
         selectedQuestion = questions[selectedQuestionIndex]
         prevDisabled = selectedQuestionIndex == 0
         nextDisabled = selectedQuestionIndex == questions.count - 1
         answer = selectedQuestion?.answer ?? ""
+    }
+
+    func refreshSubmittedCounter() {
+        submittedQuestions = questions.filter { $0.submited == true }.count
     }
 }
